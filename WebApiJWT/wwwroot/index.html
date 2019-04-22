@@ -21,14 +21,16 @@
         };
 
         $.ajax({
-            type: 'POST',
+            type: "POST",
+            accepts: "application/json",
             url: "/api/Auth/GetToken",
-            dataType: 'JSON',
             contentType: "application/json",
-            async: true,
-            data: loginVM,
+            data: JSON.stringify(loginVM),
             success: function (response) {
                 console.log(response);
+                var token = response;
+                // Depois guardar no store
+                GetDados(token);
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 console.log(jqXHR);
@@ -38,11 +40,13 @@
         }).always(function () { console.log("Fim") });
     }
 
-	function GetDados() {
+	function GetDados(token) {
 
 		$.ajax({
-			type: "GET",
-			url: "http://localhost:54180/api/values",
+            type: "GET",
+            headers: { "Authorization": "Bearer " + token },
+            url: "api/values",
+            contentType: "application/json",
 			success: function (retorno) {
 				console.log(retorno);
 			},
